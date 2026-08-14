@@ -54,7 +54,14 @@
   header.hero{padding:80px 0 96px;}
   .hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center;}
 
-  .hero-photo-wrap{position:relative; padding:20px 34px;}
+  .hero-photo-wrap{position:relative; padding:20px 34px; isolation:isolate;}
+  .orbit-rings{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:-1; pointer-events:none; width:640px; height:640px;}
+  .orbit-rings circle{fill:none; stroke:var(--accent); }
+  .orbit-rings .ring-1{stroke-opacity:0.22; stroke-width:1; stroke-dasharray:2 6;}
+  .orbit-rings .ring-2{stroke-opacity:0.14; stroke-width:1; stroke-dasharray:1 5;}
+  .orbit-rings .ring-3{stroke-opacity:0.09; stroke-width:1; stroke-dasharray:3 7;}
+  .orbit-rings{animation:orbit-spin 60s linear infinite;}
+  @keyframes orbit-spin{from{transform:translate(-50%,-50%) rotate(0deg);} to{transform:translate(-50%,-50%) rotate(360deg);}}
   .hero-photo-frame{
     position:relative; border-radius:26px; padding:10px;
     background:linear-gradient(160deg, var(--surface-2), var(--surface));
@@ -134,7 +141,12 @@
   .skill-items{display:flex; flex-wrap:wrap; gap:6px;}
   .skill-chip{font-size:12.5px; color:var(--ink-dim); background:var(--surface-2); padding:5px 10px; border-radius:5px;}
 
-  .proj-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:28px;}
+  .proj-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:28px; transition:opacity 0.25s, transform 0.25s;}
+  .proj-card.hidden{display:none;}
+  .filter-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:36px;}
+  .filter-pill{font-family:var(--mono); font-size:12px; color:var(--ink-dim); background:var(--surface); border:1px solid var(--line); padding:10px 18px; border-radius:24px; cursor:pointer; transition:all 0.15s;}
+  .filter-pill:hover{border-color:var(--accent); color:var(--ink);}
+  .filter-pill.active{background:var(--accent); color:#04100C; border-color:var(--accent); font-weight:600;}
   .proj-head{padding:26px 28px 20px;}
   .proj-tagrow{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
   .proj-badge{font-family:var(--mono); font-size:10.5px; color:var(--accent); background:var(--accent-soft); padding:4px 10px; border-radius:5px;}
@@ -145,9 +157,20 @@
   .proj-gallery{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);}
   .proj-gallery.three{grid-template-columns:repeat(3,1fr);}
   .shot{position:relative; overflow:hidden; background:var(--bg); cursor:zoom-in;}
-  .shot img{width:100%; height:100%; object-fit:cover; object-position:top; aspect-ratio:16/10; transition:transform 0.35s ease;}
-  .shot:hover img{transform:scale(1.06);}
-  .shot-label{position:absolute; bottom:0; left:0; right:0; background:linear-gradient(0deg, rgba(0,0,0,0.75), transparent); padding:18px 10px 8px; font-family:var(--mono); font-size:10px; color:#fff; letter-spacing:0.3px;}
+  .shot img{width:100%; height:100%; object-fit:cover; object-position:top; aspect-ratio:16/10; transition:transform 0.35s ease, filter 0.35s ease;}
+  .shot:hover img{transform:scale(1.06); filter:brightness(0.55) blur(1px);}
+  .shot-label{position:absolute; bottom:0; left:0; right:0; background:linear-gradient(0deg, rgba(0,0,0,0.75), transparent); padding:18px 10px 8px; font-family:var(--mono); font-size:10px; color:#fff; letter-spacing:0.3px; transition:opacity 0.25s;}
+  .shot:hover .shot-label{opacity:0;}
+  .view-case{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    opacity:0; transition:opacity 0.25s; pointer-events:none;
+  }
+  .shot:hover .view-case{opacity:1;}
+  .view-case span{
+    font-family:var(--mono); font-size:11.5px; font-weight:600; color:#04100C;
+    background:var(--accent); padding:9px 18px; border-radius:20px;
+    box-shadow:0 10px 25px -8px rgba(46,217,160,0.6);
+  }
 
   .cert-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
   .cert-card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:20px; display:flex; gap:16px; align-items:flex-start;}
@@ -255,6 +278,11 @@
     </div>
 
     <div class="hero-photo-wrap">
+      <svg class="orbit-rings" viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg">
+        <circle class="ring-1" cx="320" cy="320" r="310"/>
+        <circle class="ring-2" cx="320" cy="320" r="260"/>
+        <circle class="ring-3" cx="320" cy="320" r="200"/>
+      </svg>
       <div class="hero-photo-frame">
         <div class="hero-photo">
           <div class="scan-line"></div>
@@ -391,7 +419,14 @@
       <p class="sec-lede">Click any screenshot to zoom in. Happy to walk through the data model and DAX behind either build.</p>
     </div>
 
-    <div class="proj-card">
+    <div class="filter-row">
+      <button class="filter-pill active" data-filter="all">All Projects</button>
+      <button class="filter-pill" data-filter="cafm">CAFM</button>
+      <button class="filter-pill" data-filter="hr">HR Analytics</button>
+      <button class="filter-pill" data-filter="powerbi">Power BI</button>
+    </div>
+
+    <div class="proj-card" data-cat="cafm powerbi">
       <div class="proj-head">
         <div class="proj-tagrow"><span class="proj-badge">CAFM · FACILITIES MANAGEMENT</span></div>
         <div class="proj-title">CAFM Operations Analytics</div>
@@ -399,13 +434,13 @@
         <div class="proj-stack"><span>Power BI</span><span>DAX</span><span>SLA Modeling</span><span>Multi-page Navigation</span></div>
       </div>
       <div class="proj-gallery three">
-        <div class="shot" onclick="openLightbox('cafm-overview.jpg')"><img src="cafm-overview.jpg" alt="CAFM Overview page"><div class="shot-label">Overview</div></div>
-        <div class="shot" onclick="openLightbox('cafm-operations.jpg')"><img src="cafm-operations.jpg" alt="CAFM Operations page"><div class="shot-label">Operations</div></div>
-        <div class="shot" onclick="openLightbox('cafm-feedback.jpg')"><img src="cafm-feedback.jpg" alt="CAFM Customer Feedback page"><div class="shot-label">Customer Feedback</div></div>
+        <div class="shot" onclick="openLightbox('cafm-overview.jpg')"><img src="cafm-overview.jpg" alt="CAFM Overview page"><div class="shot-label">Overview</div><div class="view-case"><span>View Case ↗</span></div></div>
+        <div class="shot" onclick="openLightbox('cafm-operations.jpg')"><img src="cafm-operations.jpg" alt="CAFM Operations page"><div class="shot-label">Operations</div><div class="view-case"><span>View Case ↗</span></div></div>
+        <div class="shot" onclick="openLightbox('cafm-feedback.jpg')"><img src="cafm-feedback.jpg" alt="CAFM Customer Feedback page"><div class="shot-label">Customer Feedback</div><div class="view-case"><span>View Case ↗</span></div></div>
       </div>
     </div>
 
-    <div class="proj-card">
+    <div class="proj-card" data-cat="hr powerbi">
       <div class="proj-head">
         <div class="proj-tagrow"><span class="proj-badge">HR ANALYTICS · LOGISTICS</span></div>
         <div class="proj-title">Logistics Co — HR Analytics Suite</div>
@@ -413,10 +448,10 @@
         <div class="proj-stack"><span>Power BI</span><span>DAX</span><span>Workforce Analytics</span><span>Funnel Modeling</span></div>
       </div>
       <div class="proj-gallery">
-        <div class="shot" onclick="openLightbox('hr-overview.jpg')"><img src="hr-overview.jpg" alt="Workforce Overview page"><div class="shot-label">Workforce Overview</div></div>
-        <div class="shot" onclick="openLightbox('hr-compensation.jpg')"><img src="hr-compensation.jpg" alt="Compensation and Performance page"><div class="shot-label">Compensation</div></div>
-        <div class="shot" onclick="openLightbox('hr-training.jpg')"><img src="hr-training.jpg" alt="Training and Development page"><div class="shot-label">Development</div></div>
-        <div class="shot" onclick="openLightbox('hr-recruitment.jpg')"><img src="hr-recruitment.jpg" alt="Recruitment Insights page"><div class="shot-label">Recruitment</div></div>
+        <div class="shot" onclick="openLightbox('hr-overview.jpg')"><img src="hr-overview.jpg" alt="Workforce Overview page"><div class="shot-label">Workforce Overview</div><div class="view-case"><span>View Case ↗</span></div></div>
+        <div class="shot" onclick="openLightbox('hr-compensation.jpg')"><img src="hr-compensation.jpg" alt="Compensation and Performance page"><div class="shot-label">Compensation</div><div class="view-case"><span>View Case ↗</span></div></div>
+        <div class="shot" onclick="openLightbox('hr-training.jpg')"><img src="hr-training.jpg" alt="Training and Development page"><div class="shot-label">Development</div><div class="view-case"><span>View Case ↗</span></div></div>
+        <div class="shot" onclick="openLightbox('hr-recruitment.jpg')"><img src="hr-recruitment.jpg" alt="Recruitment Insights page"><div class="shot-label">Recruitment</div><div class="view-case"><span>View Case ↗</span></div></div>
       </div>
     </div>
   </div>
@@ -526,6 +561,20 @@
     });
   }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
   sections.forEach(sec => { if(sec) spy.observe(sec); });
+
+  const pills = document.querySelectorAll('.filter-pill');
+  const projCards = document.querySelectorAll('.proj-card');
+  pills.forEach(pill=>{
+    pill.addEventListener('click', ()=>{
+      pills.forEach(p=>p.classList.remove('active'));
+      pill.classList.add('active');
+      const f = pill.dataset.filter;
+      projCards.forEach(card=>{
+        const cats = (card.dataset.cat || '').split(' ');
+        card.classList.toggle('hidden', f !== 'all' && !cats.includes(f));
+      });
+    });
+  });
 
   function openLightbox(src){
     document.getElementById('lightbox-img').src = src;
