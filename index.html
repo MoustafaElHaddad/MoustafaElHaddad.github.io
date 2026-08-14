@@ -44,24 +44,34 @@
   .brand{display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:700; font-size:17px;}
   .brand-mark{width:32px; height:32px; border-radius:8px; background:linear-gradient(135deg, var(--accent), #0F7A56); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:600; color:#04100C; font-size:13px;}
   .navlinks{display:flex; gap:30px; font-size:14px; color:var(--ink-dim);}
-  .navlinks a{transition:color 0.15s;}
+  .navlinks a{position:relative; padding:6px 2px; transition:color 0.15s;}
+  .navlinks a.active{color:var(--ink);}
+  .navlinks a.active::after{content:''; position:absolute; left:2px; right:2px; bottom:-2px; height:2px; border-radius:2px; background:var(--accent);}
   .navlinks a:hover, .navlinks a:focus-visible{color:var(--ink);}
   .nav-cta{font-family:var(--mono); font-size:12.5px; color:var(--accent); border:1px solid rgba(212,175,55,0.4); padding:8px 16px; border-radius:20px; transition:background 0.15s, border-color 0.15s;}
   .nav-cta:hover{background:var(--accent-soft); border-color:var(--accent);}
 
   header.hero{padding:80px 0 96px;}
-  .hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:24px; align-items:start;}
-  .bento-side{display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto auto; gap:14px;}
-  .bento-photo{grid-column:1/3; position:relative; border-radius:18px; overflow:hidden; border:1px solid var(--line); aspect-ratio:16/11; background:var(--surface); box-shadow:0 30px 60px -30px rgba(0,0,0,0.7);}
-  .bento-photo img{width:100%; height:100%; object-fit:cover; object-position:50% 18%; filter:saturate(0.92) contrast(1.03);}
-  .bento-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(0deg, rgba(5,11,16,0.55) 0%, rgba(5,11,16,0) 38%); pointer-events:none;}
-  .bento-photo-tag{position:absolute; bottom:14px; left:16px; font-family:var(--mono); font-size:10.5px; color:var(--ink); letter-spacing:0.4px; z-index:1;}
-  .bento-stat{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:20px; transition:border-color 0.2s, transform 0.2s;}
-  .bento-stat:hover{border-color:var(--accent); transform:translateY(-2px);}
-  .bento-label{font-family:var(--mono); font-size:9.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:8px;}
-  .bento-value{font-family:var(--display); font-weight:700; font-size:28px;}
-  .bento-value.gold{color:var(--accent);}
-  .bento-value.good{color:var(--good);}
+  .hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center;}
+
+  .hero-photo-wrap{position:relative; padding:20px 34px;}
+  .hero-photo{
+    position:relative; border-radius:22px; overflow:hidden;
+    background:linear-gradient(180deg, #EAF3F0 0%, #DCE9E4 100%);
+    aspect-ratio:3/3.55; box-shadow:0 40px 80px -30px rgba(0,0,0,0.75);
+  }
+  .hero-photo::before{content:''; position:absolute; top:34px; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, var(--accent), transparent); opacity:0.7; z-index:1;}
+  .hero-photo img{width:100%; height:100%; object-fit:cover; object-position:50% 15%; display:block;}
+  .float-card{position:absolute; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 18px; box-shadow:0 20px 45px -18px rgba(0,0,0,0.7); z-index:2;}
+  .float-1{top:0; left:-6px;}
+  .float-2{top:44%; right:-30px;}
+  .float-3{bottom:6%; left:-16px;}
+  .float-label{font-family:var(--mono); font-size:9.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:5px;}
+  .float-value{font-family:var(--display); font-weight:700; font-size:19px;}
+  .float-value.gold{color:var(--accent);}
+  .float-value.good{color:var(--good);}
+  .float-bars{display:flex; align-items:flex-end; gap:3px; height:16px; margin-top:8px;}
+  .float-bars span{width:4px; border-radius:1px; background:linear-gradient(180deg, var(--accent), #1a5c47);}
   .eyebrow{display:inline-flex; align-items:center; gap:9px; font-family:var(--display); font-weight:600; font-size:13px; letter-spacing:0.3px; color:var(--ink-dim); border:1px solid var(--line); padding:8px 16px; border-radius:20px; margin-bottom:26px;}
   .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--good); box-shadow:0 0 0 3px rgba(76,175,135,0.2);}
   h1.hero-title{font-family:var(--display); font-weight:700; font-size:50px; line-height:1.1; letter-spacing:-0.5px; margin-bottom:20px;}
@@ -179,8 +189,8 @@
     .contact-grid{grid-template-columns:1fr;}
     .navlinks{display:none;}
     .hero-grid{grid-template-columns:1fr;}
-    .bento-side{order:-1;}
-    .bento-photo{aspect-ratio:16/10;}
+    .bento-side{order:-1; max-width:300px; margin:0 auto;}
+    .float-1, .float-2, .float-3{display:none;}
     h1.hero-title{font-size:36px;}
     .about-grid{grid-template-columns:1fr;}
     .skill-grid{grid-template-columns:repeat(2,1fr);}
@@ -228,18 +238,20 @@
       </div>
     </div>
 
-    <div class="bento-side">
-      <div class="bento-photo">
-        <img src="headshot.jpg" alt="Moustafa El-Haddad">
-        <div class="bento-photo-tag">MOUSTAFA EL-HADDAD</div>
+    <div class="hero-photo-wrap">
+      <div class="hero-photo"><img src="headshot.jpg" alt="Moustafa El-Haddad"></div>
+      <div class="float-card float-1">
+        <div class="float-label">Portfolio</div>
+        <div class="float-value gold">50+ Dashboards</div>
       </div>
-      <div class="bento-stat">
-        <div class="bento-label">Dashboards Shipped</div>
-        <div class="bento-value gold">50+</div>
+      <div class="float-card float-2">
+        <div class="float-label">Data Scale</div>
+        <div class="float-value good">1M+ Records</div>
+        <div class="float-bars"><span style="height:40%"></span><span style="height:70%"></span><span style="height:55%"></span><span style="height:90%"></span></div>
       </div>
-      <div class="bento-stat">
-        <div class="bento-label">Records Analyzed</div>
-        <div class="bento-value good">1M+</div>
+      <div class="float-card float-3">
+        <div class="float-label">Experience</div>
+        <div class="float-value">3+ Years FM</div>
       </div>
     </div>
   </div>
@@ -481,6 +493,18 @@
     spot.classList.add('on');
   });
   window.addEventListener('mouseleave', ()=> spot.classList.remove('on'));
+
+  const navLinks = document.querySelectorAll('.navlinks a');
+  const sections = [...navLinks].map(a => document.querySelector(a.getAttribute('href')));
+  const spy = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const id = '#' + entry.target.id;
+        navLinks.forEach(a=> a.classList.toggle('active', a.getAttribute('href') === id));
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+  sections.forEach(sec => { if(sec) spy.observe(sec); });
 
   function openLightbox(src){
     document.getElementById('lightbox-img').src = src;
